@@ -1,3 +1,5 @@
+# DROP DATABASE mygame;
+
 create database mygame;
 
 use mygame;
