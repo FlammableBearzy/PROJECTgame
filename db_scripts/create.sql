@@ -48,6 +48,26 @@ create table scoreboard (
     sbs_state varchar(60) not null,
     primary key (sbs_id));
 
+#---	NEW		---
+
+create table building (
+	build_id int not null auto_increment,
+    build_ap int not null,
+    build_rp int not null,
+    build_hp int not null,
+    build_name varchar(50) not null,
+    build_effect varchar(150) not null,
+    build_level int not null,
+    primary key (build_id)
+);
+
+create table board_building (
+	bb_id int not null auto_increment,
+    bb_pos int,
+    bb_build_id int,
+    bb_user_game_id int not null,
+    primary key (bb_id)
+);
 
 # Foreign Keys
 
@@ -74,3 +94,14 @@ alter table scoreboard add constraint scoreboard_fk_user_game
 alter table scoreboard add constraint scoreboard_fk_scoreboard_state
             foreign key (sb_state_id) references scoreboard_state(sbs_id) 
 			ON DELETE NO ACTION ON UPDATE NO ACTION;  
+
+
+#---	NEW		---
+
+alter table board_building add constraint board_building_fk_building
+			foreign key (bb_build_id) references building(build_id)
+            ON DELETE NO ACTION ON UPDATE NO ACTION;
+            
+alter table board_building add constraint board_building_fk_user_game
+			foreign key (bb_user_game_id) references user_game(ug_id)
+            ON DELETE NO ACTION ON UPDATE NO ACTION;
