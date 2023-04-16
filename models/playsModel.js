@@ -1,4 +1,7 @@
 const pool = require("../config/database");
+const MatchDecks = require("./deckModel");
+const Settings = require("./gameSettings.js");
+
 
 // auxiliary function to check if the game ended 
 async function checkEndGame(game) {
@@ -9,7 +12,7 @@ class Play {
     // At this moment I do not need to store information so we have no constructor
 
     // Just a to have a way to determine end of game
-    static maxNumberTurns = 10;
+    static maxNumberTurns = 20;
 
 
     // we consider all verifications were made
@@ -28,6 +31,9 @@ class Play {
             await pool.query(`Update game set gm_state_id=? where gm_id = ?`, [2, game.id]);
 
             // ---- Specific rules for each game start bellow
+            console.log("Checking");
+            await MatchDecks.genPlayerDeck(p1Id);
+            console.log("Did it generate?");
 
         } catch (err) {
             console.log(err);
@@ -51,7 +57,9 @@ class Play {
             await pool.query(`Update user_game set ug_state_id=? where ug_id = ?`,
                 [2, game.opponents[0].id]);
 
+            // 1 Player playing = 1 turn, 
             // Both players played
+            /*
             if (game.player.order == 2) {
                 // Criteria to check if game ended
                 if (await checkEndGame(game)) {
@@ -61,7 +69,19 @@ class Play {
                     await pool.query(`Update game set gm_turn=gm_turn+1 where gm_id = ?`,
                         [game.id]);
                 }
+            */
+
+            if (await checkEndGame(game)) {
+                return await Play.endGame(game);
+            } else {
+                // Increase the number of turns and continue 
+                await pool.query(`Update game set gm_turn = gm_turn+1 where gm_id = ?`,
+                    [game.id]);
             }
+
+            // removes the cards of the player that ended and get new cards to the one that will start
+            await MatchDecks.resetPlayerDeck(game.player.id);
+            await MatchDecks.genPlayerDeck(game.opponents[0].id);
 
             return { status: 200, result: { msg: "Your turn ended." } };
         } catch (err) {

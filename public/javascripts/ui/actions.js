@@ -1,4 +1,3 @@
-
 async function getGameInfo() {
     let result = await requestPlayerGame();
     if (!result.successful) {
@@ -15,6 +14,90 @@ async function getGameInfo() {
         }
     }
 }
+
+async function getBoardInfo() {
+
+    let result = await requestBoard();
+    
+    if (!result.successful){
+        alert("Something is wrong with the game please login again!");
+        window.location.pathname = "index.html";
+    } else {
+    GameInfo.matchBoard = result.matchBoard;
+    console.log(result.matchBoard);    
+    console.log(GameInfo.matchBoard.myBoard);
+        if(GameInfo.playerBoard)
+        {
+            GameInfo.playerBoard.update(GameInfo.matchBoard.myBoard);
+        } else {
+            console.log("This is where error is");
+            console.log(GameInfo.matchBoard.myBoard);
+            console.log(GameInfo.images.board);
+            console.log(Board);
+            // THIS IS GIVING UNDEFINED IDK WHY AAAAAAAAAAAAAA
+            GameInfo.playerBoard = new Board(GameInfo.matchBoard.myBoard, 200, 400, GameInfo.images.board);
+        }
+
+        if(GameInfo.oppBoard)
+        {
+            GameInfo.oppBoard.update(GameInfo.matchBoard.oppBoard)
+        } else {
+            GameInfo.oppBoard = new Board(GameInfo.matchBoard.oppBoard, 300, 100, GameInfo.images.board);
+        }
+    
+    }
+}
+
+async function getDecksInfo() {
+    let result = await requestDecks();
+    if (!result.successful){
+        alert("Something is wrong with the game please login again!");
+        window.location.pathname = "index.html";
+    } else {
+        GameInfo.matchDecks = result.matchDecks;
+        console.log(GameInfo.matchDecks.mycards);
+        
+        if (GameInfo.playerDeck) {
+            GameInfo.playerDeck.update(GameInfo.matchDecks.mycards);
+        } else {
+            GameInfo.playerDeck = new Deck("My Cards", GameInfo.matchDecks.mycards, 900, 300, playCard, GameInfo.images.card);
+        }
+
+        if (GameInfo.oppDeck) {
+            GameInfo.oppDeck.update(GameInfo.matchDecks.oppcards);
+        } else {
+            GameInfo.oppDeck = new Deck("Opponent Cards", GameInfo.matchDecks.oppcards, 900, 100, null, GameInfo.images.card);
+        }
+    }
+}
+
+
+async function playCard(card) {
+
+    //This is a target later on.
+    
+    if (card.played) {
+        alert("That card was already played.");
+        return;
+    }
+
+    if (confirm(`Do you want to play the "${card.name}" card?`)) {
+       
+        let result = await requestPlayCard(card.deckId);
+    
+        alert(result.msg)
+    
+        if (result.successful)
+        {
+            await getGameInfo();
+            await getDecksInfo();
+            await getShipsInfo();
+        }
+    }
+    
+
+}
+
 
 
 async function endturnAction() {

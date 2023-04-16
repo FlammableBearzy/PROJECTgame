@@ -33,7 +33,6 @@ class MatchBoard {
 
             let playerBoard = [];
             let oppBoard = [];
-
             for(let dbbuild of dbbuilds)
             {
                 let build = fromDBBuildingtoBuilding(dbbuild)
@@ -43,9 +42,8 @@ class MatchBoard {
                 } else {
                     oppBoard.push(build);
                 }
-
-            return { status: 200, result: new MatchBoard(playerBoard, oppBoard)};
             }
+            return { status: 200, result: new MatchBoard(playerBoard, oppBoard)};
         } catch (err) {
             console.log(err);
             return { status: 500, result: err};
