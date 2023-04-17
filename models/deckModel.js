@@ -74,6 +74,11 @@ class MatchDecks {
             let [dbcards] = await pool.query(`Select * from card inner join user_game_card on ugc_crd_id = crd_id
             where ugc_user_game_id = ? or ugc_user_game_id = ?`, 
                 [game.player.id, game.opponents[0].id]);
+
+                //Testing something else
+                console.log("--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ");
+                console.log(game.player);
+
             let playerCards = [];
             let oppCards = [];
             for(let dbcard of dbcards) {
@@ -91,14 +96,61 @@ class MatchDecks {
         }
     }
 
-    /*
+    
     static async playDeckCard(game, deckId)
     {
+        try{
+            let [dbDeckCards] = await pool.query(`Select * from card 
+                inner join user_game_card on ugc_crd_id = crd_id
+                where ugc_user_game_id = ? and ugc_id = ? and ugc_active=1`, 
+                    [game.player.id, deckId]);
+                if (dbDeckCards.length == 0) {
+                    return {status:404, result:{msg:"Card not found for this player or not active"}};
+                }   
+                let card =  fromDBCardToCard(dbDeckCards[0]);
 
+                //Need to get the board from both players here.
+                let playerBoard = GameInfo.matchBoard.myBoard; 
+                let oppBoard = GameInfo.matchBoard.oppBoard;
+                
+                switch (card.cardId)
+                {
+                    case 1: Attack1(oppBoard); break;
+                    case 2: Attack2(oppBoard); break;
+                    case 3: Attack3(oppBoard); break;
+                }
+
+                let boardSQL = `update building inner join board_building on bb_build_id = build_id set build_hp = ? where build_name = "Castle" and bb_user_game_id = ?`
+
+                await pool.query(boardSQL, [playerBoard.build_hp, playerBoard.bb_user_game_id]);
+                await pool.query(boardSQL, [oppBoard.build_hp, oppBoard.bb_user_game_id]);
+
+                
+                //if(playerBoard.Ap < card.APcost) {
+                //    return {status: 400, result:{ msg:"Not enough Action Points" }}
+                //}
+
+                //if(playerBoard.RP < card.RPcost)
+                
+            return {status:200, result: {msg: "Card played!"}};
+        } catch (err) {
+            console.log(err);
+            return { status: 500, result: err };
+        }
     }
-*/
 
+}
 
+function Attack1(oppBoard) {
+    oppBoard.hp -= 5;
+}
+
+function Attack2(oppBoard) {
+    oppBoard.hp -= 15;
+}
+
+function Attack3(oppBoard) {
+    oppBoard.hp -= 2;
 }
 
 

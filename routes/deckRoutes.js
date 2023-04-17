@@ -18,6 +18,7 @@ router.get('/auth', auth.verifyAuth, async function (req, res, next){
 
 });
 
+
 router.patch('/play', auth.verifyAuth, async function (req, res, next) {
     try {
         console.log("Play card with id: ",req.body.deckId);

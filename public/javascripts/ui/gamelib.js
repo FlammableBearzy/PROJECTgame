@@ -64,8 +64,11 @@ function draw() {
     } else  {
         GameInfo.scoreBoard.draw();
         
+        if(GameInfo.matchBoard.myBoard != undefined)
+        {
         GameInfo.playerBoard.draw();
         GameInfo.oppBoard.draw();
+        }
 
         GameInfo.playerDeck.draw();
         GameInfo.oppDeck.draw();

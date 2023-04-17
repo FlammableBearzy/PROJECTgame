@@ -6,8 +6,6 @@
 
 class Building {
     
-    static width = 100;
-    static height = 100;
     constructor(building, x, y, img) 
     {
         this.building = building;
@@ -20,6 +18,8 @@ class Building {
 
 class Board {
 
+    static width = 100;
+    static height = 100;
     static tileheight = 50;
     static nTiles = 6;
 
@@ -38,7 +38,7 @@ class Board {
         for (let buildingInfo of buildingsInfo)
         {
             buildings.push(new Building(buildingInfo, x, this.y, buildingImg));
-            x += Building.width;
+            x += Board.width;
         }
         this.buildings = buildings;
         return buildings;
@@ -57,7 +57,7 @@ class Board {
         for (let i = 0; i < this.buildings.length; i++)
         {
             let build = this.buildings[i];
-            image(build.img, build.x, build.y, Building.width, Building.height);
+            image(build.img, build.x, build.y, Board.width, Board.height);
         }
         
         // Draw the text information for the buildings in a separate area
@@ -68,13 +68,13 @@ class Board {
         for (let i = 0; i < this.buildings.length; i++)
         {
         let b = this.buildings[i];
-        let x = b.x + Building.width / 2;
-        let y = b.y + Building.height;
+        let x = b.x + Board.width / 2;
+        let y = b.y + Board.height;
 
-        text(b.building.name, x, y - Building.width / 2);
-        text(b.building.health, x, y - Building.width / 5);
-        text(b.building.level, x - Building.width * 0.35, y - Building.height + Building.height / 5);
-        text(b.building.effect, x + Building.width * 0.4, y + Building.height / 2);
+        text(b.building.name, x, y - Board.width / 2);
+        text(b.building.health, x, y - Board.width / 5);
+        text(b.building.level, x - Board.width * 0.35, y - Board.height + Board.height / 5);
+        text(b.building.effect, x + Board.width * 0.4, y + Board.height / 2);
         }
         
     }

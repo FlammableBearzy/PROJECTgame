@@ -73,6 +73,7 @@ async function requestDecks() {
     }
 }
 
+
 async function requestPlayCard(deckId) {
     try {
         const response = await fetch(`/api/deck/play`, 
