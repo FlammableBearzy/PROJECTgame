@@ -120,7 +120,8 @@ class MatchDecks {
                     case 3: Attack3(oppBoard); break;
                 }
 
-                let boardSQL = `update building inner join board_building on bb_build_id = build_id set build_hp = ? where build_name = "Castle" and bb_user_game_id = ?`
+                let boardSQL = `update building inner join board_building on bb_build_id = build_id set build_hp = ?
+                                 where build_name = "Castle" and bb_user_game_id = ?`
 
                 await pool.query(boardSQL, [playerBoard.build_hp, playerBoard.bb_user_game_id]);
                 await pool.query(boardSQL, [oppBoard.build_hp, oppBoard.bb_user_game_id]);

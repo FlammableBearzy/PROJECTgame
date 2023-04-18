@@ -3,6 +3,7 @@ const pool = require("../config/database");
 
 
 function fromDBBuildingtoBuilding(dbBuilding) {
+    //After database update, need to change build_hp to bb_build_hp
     return new Building(dbBuilding.build_id, dbBuilding.bb_id, dbBuilding.build_ap, dbBuilding.build_rp, dbBuilding.build_hp, dbBuilding.build_name, dbBuilding.build_effect, dbBuilding.build_level);
 }
 

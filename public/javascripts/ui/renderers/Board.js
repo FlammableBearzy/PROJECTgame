@@ -27,17 +27,17 @@ class Board {
     {
         this.x = x;
         this.y = y;
-        this.buildings = this.createBuildings(buildingsInfo, buildingImg);
         this.buildingImg = buildingImg;
+        this.buildings = this.createBuildings(buildingsInfo);
         //this.clickAction = clickAction;
     }
 
-    createBuildings(buildingsInfo, buildingImg) {
+    createBuildings(buildingsInfo) {
         let buildings = [];
         let x = this.x;
         for (let buildingInfo of buildingsInfo)
         {
-            buildings.push(new Building(buildingInfo, x, this.y, buildingImg));
+            buildings.push(new Building(buildingInfo, x, this.y, this.buildingImg));
             x += Board.width;
         }
         this.buildings = buildings;
