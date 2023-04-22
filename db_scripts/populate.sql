@@ -21,14 +21,14 @@ insert into scoreboard_state (sbs_state) values ('Won');
 #---	NEW		---
 
 # Positions
-insert into board_positions (bp_id) values (0); #ALWAYS WHERE MAIN BUILDING IS
+insert into board_positions (bp_id, bp_obstruct) values (0, 0);
+insert into board_positions (bp_id, bp_obstruct) values (1, 1);
+insert into board_positions (bp_id, bp_obstruct) values (2, 1);
+insert into board_positions (bp_id, bp_obstruct) values (3, 1);
+insert into board_positions (bp_id, bp_obstruct) values (4, 1);
+insert into board_positions (bp_id, bp_obstruct) values (5, 1);
+insert into board_positions (bp_id, bp_obstruct) values (6, 1);
 
-insert into board_positions (bp_id) values (1);
-insert into board_positions (bp_id) values (2);
-insert into board_positions (bp_id) values (3);
-insert into board_positions (bp_id) values (4);
-insert into board_positions (bp_id) values (5);
-insert into board_positions (bp_id) values (6);
 
 # Buildings
 #Main Building
@@ -55,6 +55,6 @@ INSERT INTO game VALUES (1,1,2);
 INSERT INTO user_game VALUES (1,1,1,1,2),(2,1,2,1,1);
 
 # Cards
-insert into card (crd_AP_cost, crd_RP_cost, crd_name, crd_effect) values (1, 0, "Attack 1", "Deal 5 damage");
-insert into card (crd_AP_cost, crd_RP_cost, crd_name, crd_effect) values (3, 0, "Attack 2", "Deal 15 damage");
-insert into card (crd_AP_cost, crd_RP_cost, crd_name, crd_effect) values (0, 0, "Attack 3", "Deal 2 damage");
+insert into card (crd_AP_cost, crd_RP_cost, crd_name, crd_effect, crd_note) values (1, 0, "Attack 1", "Deal 5 damage", null);
+insert into card (crd_AP_cost, crd_RP_cost, crd_name, crd_effect, crd_note) values (3, 0, "Attack 2", "Deal 15 damage", null);
+insert into card (crd_AP_cost, crd_RP_cost, crd_name, crd_effect, crd_note) values (0, 0, "Attack 3", "Deal 2 damage", null);

@@ -8,6 +8,12 @@ function fromDBCardToCard(dbCard) {
 }
 
 
+/*
+class Board {
+    constructor(BBId, position, buildingId, health, )
+}
+*/
+
 class Card {
     constructor (cardId, deckId, APcost, RPcost, name, effect, active) {
         this.cardId = cardId;
@@ -109,9 +115,28 @@ class MatchDecks {
                 }   
                 let card =  fromDBCardToCard(dbDeckCards[0]);
 
+
+            let [dbBoard] = await pool.query(`Select * from board_building where bb_user_game_id = ? or bb_user_game_id = ?`, [game.player.id, game.opponents[0].id]);
                 //Need to get the board from both players here.
-                let playerBoard = GameInfo.matchBoard.myBoard; 
-                let oppBoard = GameInfo.matchBoard.oppBoard;
+                
+                let playerBoard = []; 
+                let oppBoard = [];
+
+                for(let i = 0; i < dbBoard.length; i++)
+                {
+                    if (dbBoard[i].bb_user_game_id == game.player.id)
+                    {
+                        playerBoard.push(dbBoard[i]);
+                    } else {
+                        oppBoard.push(dbBoard[i]);
+                    }
+
+                }
+                
+
+                console.log(playerBoard);
+                console.log(oppBoard);
+
                 
                 switch (card.cardId)
                 {
@@ -120,12 +145,16 @@ class MatchDecks {
                     case 3: Attack3(oppBoard); break;
                 }
 
-                let boardSQL = `update building inner join board_building on bb_build_id = build_id set build_hp = ?
-                                 where build_name = "Castle" and bb_user_game_id = ?`
+                let boardSQL = `update board_building inner join building on build_id = bb_build_id set bb_build_hp = ?
+                                 where bb_pos = 0 and bb_user_game_id = ?`
 
-                await pool.query(boardSQL, [playerBoard.build_hp, playerBoard.bb_user_game_id]);
-                await pool.query(boardSQL, [oppBoard.build_hp, oppBoard.bb_user_game_id]);
+                for (let i = 0; i < playerBoard.length; i++) {
+                await pool.query(boardSQL, [playerBoard[i].bb_build_hp, playerBoard[i].bb_id]);
+                }
 
+                for (let i = 0; i < oppBoard.length; i++) {
+                    await pool.query(boardSQL, [oppBoard[i].bb_build_hp, oppBoard[i].bb_id]);
+                }
                 
                 //if(playerBoard.Ap < card.APcost) {
                 //    return {status: 400, result:{ msg:"Not enough Action Points" }}
@@ -143,15 +172,30 @@ class MatchDecks {
 }
 
 function Attack1(oppBoard) {
-    oppBoard.hp -= 5;
+    for (let i = 0; i < oppBoard.length; i++) {
+      if (oppBoard[i].bb_pos === 0) {
+        oppBoard[i].bb_build_hp -= 5;
+        break;
+        }
+    }
 }
 
-function Attack2(oppBoard) {
-    oppBoard.hp -= 15;
+  function Attack2(oppBoard) {
+    for (let i = 0; i < oppBoard.length; i++) {
+      if (oppBoard[i].bb_pos === 0) {
+        oppBoard[i].bb_build_hp -= 15;
+        break;
+        }
+    }
 }
 
-function Attack3(oppBoard) {
-    oppBoard.hp -= 2;
+  function Attack3(oppBoard) {
+    for (let i = 0; i < oppBoard.length; i++) {
+      if (oppBoard[i].bb_pos === 0) {
+        oppBoard[i].bb_build_hp -= 2;
+        break;
+        }
+    }
 }
 
 

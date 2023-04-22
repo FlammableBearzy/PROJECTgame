@@ -65,12 +65,14 @@ create table board_building (
 	bb_id int not null auto_increment,
     bb_pos int not null, #need to make this a "not null". ill also need to change the populate for it to not have Null values.
     bb_build_id int not null,
+    bb_build_hp int not null,
     bb_user_game_id int not null,
     primary key (bb_id)
 );
 
 create table board_positions (
 bp_id int not null,
+bp_obstruct tinyint(1) not null,
 primary key (bp_id)
 );
 
@@ -82,6 +84,7 @@ crd_AP_cost int not null,
 crd_RP_cost int not null,
 crd_name varchar(50) not null,
 crd_effect varchar(200) not null,
+crd_note varchar(200),
 primary key (crd_id)
 );
 

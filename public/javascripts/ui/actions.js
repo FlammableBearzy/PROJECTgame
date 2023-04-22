@@ -83,7 +83,7 @@ async function playCard(card) {
 
     if (confirm(`Do you want to play the "${card.name}" card?`)) {
        
-        //let result = await requestPlayCard(card.deckId);
+        let result = await requestPlayCard(card.deckId);
     
         alert("You played the card! (result currently commented due to errors)")
     
