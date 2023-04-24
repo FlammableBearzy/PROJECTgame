@@ -76,6 +76,15 @@ bp_obstruct tinyint(1) not null,
 primary key (bp_id)
 );
 
+create table board_stats (
+bs_id int not null auto_increment,
+#bs_board_id int not null, #need to indentify the board
+bs_attack int not null default 1, #this is the attack value modifier for the player. this increases depending on the board. this can reduce depending on existing buildings
+bs_ap int not null default 1, #players current action points, new turn will add values here, cards and buildings will remove from here, can reach 0
+bs_rp int not null default 1, #players current resource points, new turn will add values here, cards and buildings will remove from here, can reach 0
+bs_user_game_id int not null, #need to identify which player it is
+primary key (bs_id)
+);
 
 #--- Cards
 create table card (
@@ -145,6 +154,14 @@ alter table board_building add constraint board_building_fk_user_game
 alter table board_building add constraint board_building_fk_board_positions
 			foreign key (bb_pos) references board_positions(bp_id)
             ON DELETE NO ACTION ON UPDATE NO ACTION;
+            
+alter table board_stats add constraint board_stats_fk_user_game
+			foreign key (bs_user_game_id) references user_game(ug_id)
+            ON DELETE NO ACTION ON UPDATE NO ACTION;
+            
+#alter table board_stats add constraint board_stats_fk_board_building
+#			foreign key (bs_board_id) references user_game(ug_id)
+#            ON DELETE NO ACTION ON UPDATE NO ACTION;
             
 alter table user_game_card add constraint user_game_card_fk_user_game
             foreign key (ugc_user_game_id) references user_game(ug_id) 

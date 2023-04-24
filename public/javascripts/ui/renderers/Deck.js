@@ -12,7 +12,7 @@ class Card {
         image(this.img, this.x,this.y, Card.width, Card.height);
         
         textAlign(CENTER,CENTER);
-        fill(255)
+        fill(255);
         textStyle(BOLD);
         textSize(16);
         stroke(0);

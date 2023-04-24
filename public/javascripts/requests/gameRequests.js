@@ -38,9 +38,7 @@ async function requestCloseScore() {
 async function requestBoard() {
     try
     {
-        console.log("Error here perhaps?");
         const response = await fetch (`/api/board/auth`);
-        console.log("It managed to go thro");
         let result = await response.json();
 
         return {
@@ -57,9 +55,7 @@ async function requestBoard() {
 
 async function requestDecks() {
     try{
-        console.log("Error here perhaps?");
         const response = await fetch(`/api/deck/auth`);
-        console.log("It managed to go thro");
         let result = await response.json();
         return {
             successful: response.status == 200,
@@ -70,6 +66,22 @@ async function requestDecks() {
         //500 error code here
         console.log(err);
         return {err: err};  
+    }
+}
+
+async function requestStats(){
+    try{
+        const response = await fetch(`/api/stats/auth`);
+        let result = await response.json();
+
+        return {
+            successful: response.status == 200,
+            unauthenticated: response.status == 401,
+            matchStats: result
+        };
+    } catch (err) {
+        console.log(err);
+        return {err: err};
     }
 }
 

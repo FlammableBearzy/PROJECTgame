@@ -1,5 +1,8 @@
 //General Information
-module.exports.apPerTurn = 3;
+module.exports.apPerTurn = 1;
+module.exports.attack = 1;
+module.exports.rpPerTurn = 1;
+
 
 //Cards information
 module.exports.nCards = 3;

@@ -58,3 +58,7 @@ INSERT INTO user_game VALUES (1,1,1,1,2),(2,1,2,1,1);
 insert into card (crd_AP_cost, crd_RP_cost, crd_name, crd_effect, crd_note) values (1, 0, "Attack 1", "Deal 5 damage", null);
 insert into card (crd_AP_cost, crd_RP_cost, crd_name, crd_effect, crd_note) values (3, 0, "Attack 2", "Deal 15 damage", null);
 insert into card (crd_AP_cost, crd_RP_cost, crd_name, crd_effect, crd_note) values (0, 0, "Attack 3", "Deal 2 damage", null);
+
+#Stats from the board
+insert into board_stats (bs_attack, bs_ap, bs_rp, bs_user_game_id) values (1, 3, 1, 1);
+insert into board_stats (bs_attack, bs_ap, bs_rp, bs_user_game_id) values (1, 3, 1, 2);

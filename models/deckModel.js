@@ -115,6 +115,17 @@ class MatchDecks {
                 }   
                 let card =  fromDBCardToCard(dbDeckCards[0]);
 
+                //let playerStats = game.player.stats;
+
+            let [dbStats] = await pool.query(`select * from board_stats where bs_user_game_id = ?`, [game.player.id]);
+
+            for (let i = 0; i < dbStats.length; i++)
+            {
+                if (dbStats[i].bs_ap < card.APcost)
+                {
+                    return {status: 400, result:{ msg:"Not enough Action Points" }}
+                }
+            }
 
             let [dbBoard] = await pool.query(`Select * from board_building where bb_user_game_id = ? or bb_user_game_id = ?`, [game.player.id, game.opponents[0].id]);
                 //Need to get the board from both players here.
@@ -133,10 +144,13 @@ class MatchDecks {
 
                 }
                 
-
                 console.log(playerBoard);
                 console.log(oppBoard);
 
+                // verifications done, set card to inactive
+                await pool.query("update user_game_card set ugc_active = 0 where ugc_id = ?",[deckId]);
+
+                await pool.query("update board_stats set bs_ap = bs_ap - ? where bs_user_game_id = ?", [card.APcost, game.player.id]);
                 
                 switch (card.cardId)
                 {
@@ -156,9 +170,7 @@ class MatchDecks {
                     await pool.query(boardSQL, [oppBoard[i].bb_build_hp, oppBoard[i].bb_id]);
                 }
                 
-                //if(playerBoard.Ap < card.APcost) {
-                //    return {status: 400, result:{ msg:"Not enough Action Points" }}
-                //}
+
 
                 //if(playerBoard.RP < card.RPcost)
                 

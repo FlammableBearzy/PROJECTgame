@@ -15,6 +15,8 @@ class GameInfo  {
     static matchBoard;
     static matchDeck;
 
+    //Not sure if i need to call this
+    static matchStats;
 
 
     // rendererers
@@ -28,6 +30,10 @@ class GameInfo  {
     //Decks
     static playerDeck;
     static oppDeck;
+
+    //Stats
+    static playerStats;
+    static opponentStats;
 
     // buttons
     static endturnButton;

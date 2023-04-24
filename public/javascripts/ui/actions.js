@@ -71,6 +71,34 @@ async function getDecksInfo() {
     }
 }
 
+async function getStatsInfo() {
+    let result = await requestStats();
+
+    if(!result.successful)
+    {
+        alert("Something is wrong with the game please login again!");
+        window.location.pathname = "index.html";
+    } else {
+        GameInfo.matchStats = result.matchStats;
+        console.log(GameInfo.matchStats.myStats);
+
+        /*
+        if (GameInfo.playerStats)
+        {
+            GameInfo.playerStats.update(GameInfo.matchStats.myStats);
+        } else {
+            GameInfo.playerStats = new StatsModifiers(GameInfo.matchStats.myStats, 50, 400, GameInfo.images.card);
+        }
+
+        if (GameInfo.opponentStats)
+        {
+            GameInfo.opponentStats.update(GameInfo.matchStats.myStats);
+        } else {
+            GameInfo.opponentStats = new StatsModifiers(GameInfo.matchStats.oppStats, 950, 50, GameInfo.images.card);
+        }
+        */
+    }
+}
 
 async function playCard(card) {
 

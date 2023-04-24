@@ -8,6 +8,7 @@ async function checkEndGame(game) {
     return game.turn >= Play.maxNumberTurns;
 }
 
+
 class Play {
     // At this moment I do not need to store information so we have no constructor
 
@@ -71,6 +72,14 @@ class Play {
                 }
             */
 
+            let castleCheck = await pool.query(`select * from board_building where bb_build_id = 1 and bb_build_hp = 0 and (bb_user_game_id = ? or bb_user_game_id = ?);`,
+                [game.player.id, game.opponents[0].id])
+
+            if(castleCheck)
+            {
+                return await Play.endGame(game);
+            }
+                
             if (await checkEndGame(game)) {
                 return await Play.endGame(game);
             } else {
@@ -82,6 +91,8 @@ class Play {
             // removes the cards of the player that ended and get new cards to the one that will start
             await MatchDecks.resetPlayerDeck(game.player.id);
             await MatchDecks.genPlayerDeck(game.opponents[0].id);
+
+            await pool.query("update board_stats set bs_ap = bs_ap + ? where bs_user_game_id = ?", [Settings.apPerTurn, game.player.id]);
 
             return { status: 200, result: { msg: "Your turn ended." } };
         } catch (err) {
