@@ -5,6 +5,9 @@
 
 
 class Building {
+
+    static width = 100;
+    static height = 100;
     
     constructor(building, x, y, img) 
     {
@@ -12,6 +15,16 @@ class Building {
         this.x = x;
         this.y = y;
         this.img = img;
+    }
+
+    click() {
+
+        console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+
+        return mouseX > this.x && mouseX < this.x+ Building.width &&
+               mouseY > this.y && mouseY < this.y+ Building.height;
+
+               
     }
 
 }
@@ -23,13 +36,13 @@ class Board {
     static tileheight = 50;
     static nTiles = 6;
 
-    constructor(buildingsInfo, x, y, buildingImg)
+    constructor(buildingsInfo, x, y, buildingImg, clickAction)
     {
         this.x = x;
         this.y = y;
         this.buildingImg = buildingImg;
         this.buildings = this.createBuildings(buildingsInfo);
-        //this.clickAction = clickAction;
+        this.clickAction = clickAction;
     }
 
     createBuildings(buildingsInfo) {
@@ -77,6 +90,19 @@ class Board {
         text(b.building.effect, x + Board.width * 0.4, y + Board.height / 2);
         }
         
+    }
+
+    click() {
+        if (this.clickAction)
+        {
+            for (let building of this.buildings)
+            {
+                if (building.click())
+                {
+                    this.clickAction(building.building);
+                }
+            }
+        }
     }
 
 }

@@ -71,15 +71,21 @@ class Play {
                         [game.id]);
                 }
             */
+/*
 
+
+                    //I need to use an empty object | let something = {}; | so i can get verify the hp correctly (cuz im sending a string and not a list of multiple values)
             let castleCheck = await pool.query(`select * from board_building where bb_build_id = 1 and bb_build_hp = 0 and (bb_user_game_id = ? or bb_user_game_id = ?);`,
-                [game.player.id, game.opponents[0].id])
+                [game.player.id, game.opponents[0].id]);
 
-            if(castleCheck)
+            
+            if(castleCheck.rows.length > 0)
             {
                 return await Play.endGame(game);
+            } else {
+                console.log("Checking CastleCheck");
             }
-                
+*/                
             if (await checkEndGame(game)) {
                 return await Play.endGame(game);
             } else {
@@ -92,7 +98,8 @@ class Play {
             await MatchDecks.resetPlayerDeck(game.player.id);
             await MatchDecks.genPlayerDeck(game.opponents[0].id);
 
-            await pool.query("update board_stats set bs_ap = bs_ap + ? where bs_user_game_id = ?", [Settings.apPerTurn, game.player.id]);
+            await pool.query("update board_stats set bs_ap = bs_ap + bs_regenAP where bs_user_game_id = ?", [game.player.id]);
+            await pool.query("update board_stats set bs_rp = bs_rp + bs_regenRP where bs_user_game_id = ?", [game.player.id]);
 
             return { status: 200, result: { msg: "Your turn ended." } };
         } catch (err) {

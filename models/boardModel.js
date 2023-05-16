@@ -29,8 +29,10 @@ class MatchBoard {
 
     static async getMatchBoard(game) {
         try {
-            let [dbbuilds] = await pool.query(`select * from building inner join board_building on bb_build_id = build_id where bb_user_game_id = ? or bb_user_game_id = ?`, 
-                                        [game.player.id, game.opponents[0].id]);
+            let [dbbuilds] = await pool.query(`select * from building 
+                    inner join board_building on bb_build_id = build_id 
+                    where bb_user_game_id = ? or bb_user_game_id = ?`, 
+                    [game.player.id, game.opponents[0].id]);
 
             let playerBoard = [];
             let oppBoard = [];
@@ -50,6 +52,43 @@ class MatchBoard {
             return { status: 500, result: err};
         }
     }
+
+
+    static async selectBuildingFromBoard(game, boardId)
+    {
+        try{
+            let [dbBoardBuildings] = await pool.query(`select * from building 
+                inner join board_building on bb_build_id = build_id 
+                where (bb_user_game_id = ? or bb_user_game_id = ?) and bb_id = ?;`,
+                [game.player.id, game.opponents[0].id, boardId]);
+
+                if (dbBoardBuildings.length == 0)
+                {
+                    return {status:404, result:{msg:"This building could not found for this player"}};
+                }
+
+                let buildingOnBoard = fromDBBuildingtoBuilding(dbBoardBuildings[0]);
+
+                let playerBoard = [];
+                let oppBoard = [];
+                for(let dbBb of dbBoardBuildings)
+                {
+                
+                    if (dbBb.bb_user_game_id == game.player.id) 
+                    {
+                        playerBoard.push(buildingOnBoard);
+                    } else {
+                        oppBoard.push(buildingOnBoard);
+                    }
+                }
+
+            return {status: 200, result: {msg: "Building Selected!"}};
+        }catch (err){
+            console.log(err);
+            return {status: 500, result: err};
+        }
+    }
+
 
 }
 

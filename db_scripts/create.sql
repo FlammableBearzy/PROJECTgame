@@ -80,7 +80,11 @@ create table board_stats (
 bs_id int not null auto_increment,
 #bs_board_id int not null, #need to indentify the board
 bs_attack int not null default 1, #this is the attack value modifier for the player. this increases depending on the board. this can reduce depending on existing buildings
+
+bs_regenAP int not null default 1,
 bs_ap int not null default 1, #players current action points, new turn will add values here, cards and buildings will remove from here, can reach 0
+
+bs_regenRP int not null default 1,
 bs_rp int not null default 1, #players current resource points, new turn will add values here, cards and buildings will remove from here, can reach 0
 bs_user_game_id int not null, #need to identify which player it is
 primary key (bs_id)

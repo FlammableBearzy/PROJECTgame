@@ -86,7 +86,7 @@ async function requestStats(){
 }
 
 
-async function requestPlayCard(deckId) {
+async function requestPlayCard(deckId, boardId) {
     try {
         const response = await fetch(`/api/deck/play`, 
         {
@@ -96,7 +96,8 @@ async function requestPlayCard(deckId) {
             },
           method: "PATCH",
           body: JSON.stringify({
-            deckId: deckId
+            deckId: deckId,
+            boardId: boardId
         })
       });
       let result = await response.json();

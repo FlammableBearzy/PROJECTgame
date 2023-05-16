@@ -3,6 +3,7 @@ const pool = require("../config/database");
 const Settings = require("./gameSettings");
 
 
+
 function fromDBCardToCard(dbCard) {
     return new Card(dbCard.crd_id, dbCard.ugc_id, dbCard.crd_AP_cost, dbCard.crd_RP_cost, dbCard.crd_name, dbCard.crd_effect, dbCard.ugc_active);
 }
@@ -82,8 +83,8 @@ class MatchDecks {
                 [game.player.id, game.opponents[0].id]);
 
                 //Testing something else
-                console.log("--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ");
-                console.log(game.player);
+                //console.log("--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ");
+                //console.log(game.player);
 
             let playerCards = [];
             let oppCards = [];
@@ -103,7 +104,7 @@ class MatchDecks {
     }
 
     
-    static async playDeckCard(game, deckId)
+    static async playDeckCard(game, deckId, boardId)
     {
         try{
             let [dbDeckCards] = await pool.query(`Select * from card 
@@ -115,19 +116,31 @@ class MatchDecks {
                 }   
                 let card =  fromDBCardToCard(dbDeckCards[0]);
 
+                let pModifiers = game.player.stats;
+
                 //let playerStats = game.player.stats;
 
-            let [dbStats] = await pool.query(`select * from board_stats where bs_user_game_id = ?`, [game.player.id]);
+                //let [dbStats] = await pool.query(`select * from board_stats where bs_user_game_id = ?`, [game.player.id]);
 
-            for (let i = 0; i < dbStats.length; i++)
-            {
-                if (dbStats[i].bs_ap < card.APcost)
+            //for (let i = 0; i < dbStats.length; i++)
+            //{
+                if (pModifiers.ap < card.APcost)
                 {
                     return {status: 400, result:{ msg:"Not enough Action Points" }}
                 }
-            }
 
-            let [dbBoard] = await pool.query(`Select * from board_building where bb_user_game_id = ? or bb_user_game_id = ?`, [game.player.id, game.opponents[0].id]);
+                if (pModifiers.rp < card.RPcost)
+                {
+                    return {status: 400, result:{ msg:"Not enough Resource Points" }}
+                }
+            //}
+                
+
+            //Need to select building.
+            let [dbBoard] = await pool.query(`select * from building 
+            inner join board_building on bb_build_id = build_id 
+            where (bb_user_game_id = ? or bb_user_game_id = ?) and bb_id = ?;`,
+            [game.player.id, game.opponents[0].id, boardId]);
                 //Need to get the board from both players here.
                 
                 let playerBoard = []; 
@@ -135,11 +148,19 @@ class MatchDecks {
 
                 for(let i = 0; i < dbBoard.length; i++)
                 {
+                    let ConstructBoard =
+                    {
+                        buildingId: dbBoard[i].bb_build_id, 
+                        boardId: dbBoard[i].bb_id,
+                        position: dbBoard[i].bb_pos,
+                        health: dbBoard[i].bb_build_hp
+                    }
+
                     if (dbBoard[i].bb_user_game_id == game.player.id)
                     {
-                        playerBoard.push(dbBoard[i]);
+                        playerBoard.push(ConstructBoard);
                     } else {
-                        oppBoard.push(dbBoard[i]);
+                        oppBoard.push(ConstructBoard);
                     }
 
                 }
@@ -154,20 +175,20 @@ class MatchDecks {
                 
                 switch (card.cardId)
                 {
-                    case 1: Attack1(oppBoard); break;
-                    case 2: Attack2(oppBoard); break;
-                    case 3: Attack3(oppBoard); break;
+                    case 1: Attack1(oppBoard, game); break;
+                    case 2: Attack2(oppBoard, game); break;
+                    case 3: Attack3(oppBoard, game); break;
                 }
 
                 let boardSQL = `update board_building inner join building on build_id = bb_build_id set bb_build_hp = ?
-                                 where bb_pos = 0 and bb_user_game_id = ?`
+                                 where bb_pos = ? and bb_user_game_id = ?`
 
                 for (let i = 0; i < playerBoard.length; i++) {
-                await pool.query(boardSQL, [playerBoard[i].bb_build_hp, playerBoard[i].bb_id]);
+                await pool.query(boardSQL, [playerBoard[i].bb_build_hp, playerBoard[i].bb_pos, playerBoard[i].bb_id]);
                 }
 
                 for (let i = 0; i < oppBoard.length; i++) {
-                    await pool.query(boardSQL, [oppBoard[i].bb_build_hp, oppBoard[i].bb_id]);
+                    await pool.query(boardSQL, [oppBoard[i].bb_build_hp, oppBoard[i].bb_pos, oppBoard[i].bb_id]);
                 }
                 
 
@@ -183,28 +204,31 @@ class MatchDecks {
 
 }
 
-function Attack1(oppBoard) {
+function Attack1(oppBoard, game) {
     for (let i = 0; i < oppBoard.length; i++) {
-      if (oppBoard[i].bb_pos === 0) {
-        oppBoard[i].bb_build_hp -= 5;
+      if (oppBoard[i].bb_pos === 1) {
+        console.log("I am dealing this extra damage: "+game.player.stats.attack);
+        oppBoard[i].bb_build_hp -= 5 + game.player.stats.attack;
         break;
         }
     }
 }
 
-  function Attack2(oppBoard) {
+  function Attack2(oppBoard, game) {
     for (let i = 0; i < oppBoard.length; i++) {
       if (oppBoard[i].bb_pos === 0) {
-        oppBoard[i].bb_build_hp -= 15;
+        console.log("I am dealing this extra damage: "+game.player.stats.attack);
+        oppBoard[i].bb_build_hp -= 15 + game.player.stats.attack;
         break;
         }
     }
 }
 
-  function Attack3(oppBoard) {
+  function Attack3(oppBoard, game) {
     for (let i = 0; i < oppBoard.length; i++) {
       if (oppBoard[i].bb_pos === 0) {
-        oppBoard[i].bb_build_hp -= 2;
+        console.log("I am dealing this extra damage: "+game.player.stats.attack);
+        oppBoard[i].bb_build_hp -= 2 + game.player.stats.attack;
         break;
         }
     }

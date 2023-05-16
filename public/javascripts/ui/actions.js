@@ -35,14 +35,14 @@ async function getBoardInfo() {
             console.log(GameInfo.images.board);
             console.log(Board);
             // THIS IS GIVING UNDEFINED IDK WHY AAAAAAAAAAAAAA
-            GameInfo.playerBoard = new Board(GameInfo.matchBoard.myBoard, 200, 400, GameInfo.images.board);
+            GameInfo.playerBoard = new Board(GameInfo.matchBoard.myBoard, 200, 400, GameInfo.images.board, pickBuilding);
         }
 
         if(GameInfo.oppBoard)
         {
             GameInfo.oppBoard.update(GameInfo.matchBoard.oppBoard)
         } else {
-            GameInfo.oppBoard = new Board(GameInfo.matchBoard.oppBoard, 300, 100, GameInfo.images.board);
+            GameInfo.oppBoard = new Board(GameInfo.matchBoard.oppBoard, 300, 100, GameInfo.images.board, pickBuilding);
         }
     
     }
@@ -100,7 +100,7 @@ async function getStatsInfo() {
     }
 }
 
-async function playCard(card) {
+async function playCard(card, board) {
 
     //This is a target later on.
     
@@ -111,7 +111,9 @@ async function playCard(card) {
 
     if (confirm(`Do you want to play the "${card.name}" card?`)) {
        
-        let result = await requestPlayCard(card.deckId);
+        if (confirm(`Do you want to select "${board.name}?"`))
+        {
+            let result = await requestPlayCard(card.deckId, board.boardId);
     
         alert("You played the card! (result currently commented due to errors)")
     
@@ -121,11 +123,31 @@ async function playCard(card) {
             await getDecksInfo();
             await getBoardInfo();
         }
+        }
+
+        
     }
     
 
 }
 
+async function pickBuilding(building)
+{
+    if (confirm(`Do you want to pick the "${building.name}"`))
+    {
+        //let result = await requestBoard();   
+        
+        alert("You picked the building!");
+
+        // if (result.successful)
+        // {
+        //     await getGameInfo();
+        //     await getDecksInfo();
+        //     await getBoardInfo();
+        // }
+
+    }
+}
 
 
 async function endturnAction() {

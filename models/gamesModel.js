@@ -4,24 +4,27 @@ const State = require("./statesModel");
 // For now it is only an auxiliary class to hold data in here 
 // so no need to create a model file for it
 
-/*
+
 class Stats{
-    constructor (id, attack, ap, rp){
+    constructor (id, attack, regenAP, ap, regenRP, rp){
         this.id = id;
         this.attack = attack;
+        this.regenAP = regenAP;
         this.ap = ap;
+        this.regenRP = regenRP;
         this.rp = rp;
     }
     export() {
         let stats = new Stats();
         stats.attack = this.attack;
+        stats.regenAP = this.regenAP;
         stats.ap = this.ap;
+        stats.regenRP = this.regenRP;
         stats.rp = this.rp;
         return stats;
     }
     
 }
-*/
 
 class Player {
     constructor(id,name,state,order, stats) {
@@ -29,18 +32,22 @@ class Player {
         this.name = name;
         this.state= state;
         this.order = order;
+        this.stats = stats
     }
     export() {
         let player = new Player();
         player.name = this.name;
         player.state = this.state.export();
         player.order = this.order;
-        //player.stats = this.stats.export();
+        player.stats = this.stats.export();
         return player;
     }
 }
 
 class Game {
+    /*
+    I can make a static value here like MaxSomething to be called with game.
+    */
     constructor(id,turn,state,player,opponents) {
         this.id = id;
         this.turn = turn;
@@ -64,12 +71,14 @@ class Game {
     static async fillPlayersOfGame(userId,game) {
         try {
             let [dbPlayers] = await pool.query(`Select * from user 
-            inner join user_game on ug_user_id = usr_id
-             inner join user_game_state on ugst_id = ug_state_id
-            where ug_game_id=?`, [game.id]);
+                inner join user_game on ug_user_id = usr_id
+                inner join user_game_state on ugst_id = ug_state_id
+                inner join board_stats on bs_user_game_id = ug_id
+                where ug_game_id=?`, [game.id]);
             for (let dbPlayer of dbPlayers) {
-                let player = new Player(dbPlayer.ug_id,dbPlayer.usr_name,
-                            new State(dbPlayer.ugst_id,dbPlayer.ugst_state),dbPlayer.ug_order);
+                let player =    new Player(dbPlayer.ug_id,dbPlayer.usr_name,
+                                new State(dbPlayer.ugst_id,dbPlayer.ugst_state),dbPlayer.ug_order,
+                                new Stats(dbPlayer.bs_id, dbPlayer.bs_attack, dbPlayer.bs_regenAP, dbPlayer.bs_ap, dbPlayer.bs_regenRP, dbPlayer.bs_rp));
                 if (dbPlayer.usr_id == userId) game.player = player;
                 else game.opponents.push(player);
             }

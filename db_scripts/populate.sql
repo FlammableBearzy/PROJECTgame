@@ -60,5 +60,5 @@ insert into card (crd_AP_cost, crd_RP_cost, crd_name, crd_effect, crd_note) valu
 insert into card (crd_AP_cost, crd_RP_cost, crd_name, crd_effect, crd_note) values (0, 0, "Attack 3", "Deal 2 damage", null);
 
 #Stats from the board
-insert into board_stats (bs_attack, bs_ap, bs_rp, bs_user_game_id) values (1, 3, 1, 1);
-insert into board_stats (bs_attack, bs_ap, bs_rp, bs_user_game_id) values (1, 3, 1, 2);
+insert into board_stats (bs_attack, bs_regenAP, bs_ap, bs_regenRP, bs_rp, bs_user_game_id) values (1, 1, 3, 1, 1, 1);
+insert into board_stats (bs_attack, bs_regenAP, bs_ap, bs_regenRP, bs_rp, bs_user_game_id) values (1, 1, 3, 1, 1, 2);

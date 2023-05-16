@@ -136,5 +136,17 @@ async function mouseClicked() {
     if ( GameInfo.playerDeck) { 
         GameInfo.playerDeck.click(); 
     } 
+
+    if ( GameInfo.playerBoard )
+    {
+        console.log("Checking for click")
+        GameInfo.playerBoard.click();
+    }
+    if ( GameInfo.oppBoard )
+    {
+        console.log("Checking for click")
+        GameInfo.oppBoard.click();
+    }
+
 }
 
