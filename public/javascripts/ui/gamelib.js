@@ -21,9 +21,24 @@ async function refresh() {
 function preload() {
 
 //load the tiles. this will be a tile map so ill have to do some adjusting to do
-GameInfo.images.board = loadImage("/assets/tile.png");
+GameInfo.images.board = loadImage("/assets/BaseTile.png");
+GameInfo.images.castle = loadImage("/assets/Castle.png");
+GameInfo.images.blacksmith = loadImage("/assets/Blacksmith.png");
+GameInfo.images.tavern = loadImage("/assets/Tavern.png");
+GameInfo.images.farm = loadImage("/assets/Farm.png");
+GameInfo.images.boardOverlay = loadImage("/assets/HighlightBuild.png");
 
-GameInfo.images.card = loadImage("/assets/card.png");
+GameInfo.images.tapete = loadImage("/assets/Tapete.png");
+
+//Cards
+GameInfo.images.card = loadImage("/assets/cardA.png");
+GameInfo.images.cardb = loadImage("/assets/cardB.png");
+GameInfo.images.cardOverlay = loadImage("/assets/CardUsed.png");
+
+GameInfo.images.cardHidden = loadImage("/assets/BackCard.png");
+
+
+GameInfo.images.background = loadImage("/assets/background.png"); 
 
 }
 
@@ -32,7 +47,8 @@ async function setup() {
     let canvas = createCanvas(GameInfo.width, GameInfo.height);
     canvas.parent('game');
     // preload  images
-    
+
+
     await getGameInfo();
     await getBoardInfo();
     await getDecksInfo();
@@ -44,7 +60,7 @@ async function setup() {
     //buttons (create a separated function if they are many)
     GameInfo.endturnButton = createButton('End Turn');
     GameInfo.endturnButton.parent('game');
-    GameInfo.endturnButton.position(GameInfo.width-150,GameInfo.height-50);
+    GameInfo.endturnButton.position(GameInfo.width/20,4*GameInfo.height/15);
     GameInfo.endturnButton.mousePressed(endturnAction);
     GameInfo.endturnButton.addClass('game')
 
@@ -56,7 +72,7 @@ async function setup() {
 }
 
 function draw() {
-    background(220);
+    background(GameInfo.images.background);
     if (GameInfo.loading) {
         textAlign(CENTER, CENTER);
         textSize(40);
@@ -76,58 +92,21 @@ function draw() {
         GameInfo.playerDeck.draw();
         GameInfo.oppDeck.draw();
 
-        /*
-        GameInfo.playerStats.draw();
-        GameInfo.opponentStats.draw();
-        */
-
-        //console.log("------------------------------------------ START ------------------------------------------");
-        //console.log(GameInfo.matchBoard);
         if(GameInfo.matchStats.myStats != undefined)
         {
         textAlign(CENTER, CENTER);
         fill('black');
         textSize(20);
         textStyle(BOLD);
-        
+        image(GameInfo.images.tapete, 10, 110, 200, 150)
 
-        //I NEED TO CREATE THE CONSTRUCTOR FOR THIS SECTION. The information will be passed but will be written on the side OR as a pop up window.
-        //For the render it just needs to show the sprite on that spot.
-        //Everything else is hidden behind other stuff, such has upgrade and place and whatnot
-       
-        for (let i = 0; i < GameInfo.matchStats.myStats.length; i++)
-        {
-            text("Attack: " + GameInfo.matchStats.myStats[i].attack , 150, 800 + i * 25);
-            text(GameInfo.matchStats.myStats[i].ap, 150, 800 + i * 25);
-            text(GameInfo.matchStats.myStats[i].rp, 150, 800 + i * 25);
+            for (let i = 0; i < GameInfo.matchStats.myStats.length; i++)
+            {
+                text("Attack: " + GameInfo.matchStats.myStats[i].attack , 70, 140 + i * 25);
+                text("AP: " + GameInfo.matchStats.myStats[i].ap, 70, 165 + i * 25);
+                text("RP: " + GameInfo.matchStats.myStats[i].rp, 70, 190 + i * 25);
+            }
         }
-
-
-        for (let i = 0; i < GameInfo.matchStats.oppStats.length; i++)
-        {
-            text("Attack: " + GameInfo.matchStats.oppStats[i].attack , 150, 800 + i * 25);
-            text(GameInfo.matchStats.oppStats[i].ap, 150, 800 + i * 25);
-            text(GameInfo.matchStats.oppStats[i].rp, 150, 800 + i * 25);
-        }
-        /*
-        for (let i = 0; i < GameInfo.matchBoard.myBoard.length; i++)
-        {
-            text(GameInfo.matchBoard.myBoard[i].name, 100, 150 + i * 25);
-            text(GameInfo.matchBoard.myBoard[i].health, 200, 150 + i * 25);
-            text(GameInfo.matchBoard.myBoard[i].level, 300, 150 + i * 25);
-            text(GameInfo.matchBoard.myBoard[i].effect, 520, 150 + i * 25);
-        }
-
-        for (let i = 0; i < GameInfo.matchBoard.oppBoard.length; i++)
-        {
-            text(GameInfo.matchBoard.oppBoard[i].name, 100, 450 + i * 25);
-            text(GameInfo.matchBoard.oppBoard[i].health, 200, 450 + i * 25);
-            text(GameInfo.matchBoard.oppBoard[i].level, 300, 450 + i * 25);
-            text(GameInfo.matchBoard.oppBoard[i].effect, 520, 450 + i * 25);
-        }
-        */
-        }
-        //console.log("------------------------------------------ END ------------------------------------------");
     }
 }
 

@@ -30,19 +30,16 @@ async function getBoardInfo() {
         {
             GameInfo.playerBoard.update(GameInfo.matchBoard.myBoard);
         } else {
-            console.log("This is where error is");
-            console.log(GameInfo.matchBoard.myBoard);
-            console.log(GameInfo.images.board);
-            console.log(Board);
-            // THIS IS GIVING UNDEFINED IDK WHY AAAAAAAAAAAAAA
-            GameInfo.playerBoard = new Board(GameInfo.matchBoard.myBoard, 200, 400, GameInfo.images.board, pickBuilding);
+            // Set the flag before calling pickBuilding
+            GameInfo.selectingBuilding = true;
+            GameInfo.playerBoard = new Board(GameInfo.matchBoard.myBoard, 100, 550, GameInfo.images, pickBuilding);
         }
 
         if(GameInfo.oppBoard)
         {
             GameInfo.oppBoard.update(GameInfo.matchBoard.oppBoard)
         } else {
-            GameInfo.oppBoard = new Board(GameInfo.matchBoard.oppBoard, 300, 100, GameInfo.images.board, pickBuilding);
+            GameInfo.oppBoard = new Board(GameInfo.matchBoard.oppBoard, 500, 140, GameInfo.images, pickBuilding);
         }
     
     }
@@ -59,14 +56,16 @@ async function getDecksInfo() {
         
         if (GameInfo.playerDeck) {
             GameInfo.playerDeck.update(GameInfo.matchDecks.mycards);
+            
         } else {
-            GameInfo.playerDeck = new Deck("My Cards", GameInfo.matchDecks.mycards, 900, 300, playCard, GameInfo.images.card);
+            GameInfo.playerDeck = new Deck("My Cards", GameInfo.matchDecks.mycards, 1050, 500, selectCard, GameInfo.images);
+            
         }
 
         if (GameInfo.oppDeck) {
             GameInfo.oppDeck.update(GameInfo.matchDecks.oppcards);
         } else {
-            GameInfo.oppDeck = new Deck("Opponent Cards", GameInfo.matchDecks.oppcards, 900, 100, null, GameInfo.images.card);
+            GameInfo.oppDeck = new DeckHidden("Opponent Cards", 1300, 120, GameInfo.images.cardHidden);
         }
     }
 }
@@ -82,14 +81,14 @@ async function getStatsInfo() {
         GameInfo.matchStats = result.matchStats;
         console.log(GameInfo.matchStats.myStats);
 
-        /*
+        
         if (GameInfo.playerStats)
         {
             GameInfo.playerStats.update(GameInfo.matchStats.myStats);
         } else {
-            GameInfo.playerStats = new StatsModifiers(GameInfo.matchStats.myStats, 50, 400, GameInfo.images.card);
+            GameInfo.playerStats = new StatsModifiers(GameInfo.matchStats.myStats, 300, 100, GameInfo.images.card);
         }
-
+        /*
         if (GameInfo.opponentStats)
         {
             GameInfo.opponentStats.update(GameInfo.matchStats.myStats);
@@ -100,54 +99,70 @@ async function getStatsInfo() {
     }
 }
 
-async function playCard(card, board) {
-
+async function selectCard(card) {
     //This is a target later on.
-    
-    if (card.played) {
-        alert("That card was already played.");
-        return;
-    }
+    GameInfo.selectedCard = card;
+    await playCard();
+}
 
-    if (confirm(`Do you want to play the "${card.name}" card?`)) {
-       
-        if (confirm(`Do you want to select "${board.name}?"`))
-        {
-            let result = await requestPlayCard(card.deckId, board.boardId);
-    
-        alert("You played the card! (result currently commented due to errors)")
-    
-        if (result.successful)
-        {
-            await getGameInfo();
-            await getDecksInfo();
-            await getBoardInfo();
-        }
-        }
+async function pickBuilding(board) {
+  if (!GameInfo.selectingBuilding) {
+    alert("No building selection in progress.");
+    return;
+  }
 
-        
+  if (!board) {
+    alert("No building selected.");
+    return;
+  }
+    if (confirm(`Do you want to pick the "${board.name}"?`)) {
+        GameInfo.selectedBuilding = board;
+        alert("You've selected: "+GameInfo.selectedBuilding.name);
+    return GameInfo.selectedBuilding;
+  }
+}
+
+async function playCard(board) {
+  console.log("Testing if this is called");
+
+  let card = GameInfo.selectedCard;
+
+  if (!card) {
+    alert("No card selected.");
+    return;
+  }
+
+  if (card.played) {
+    alert("That card was already played.");
+    return;
+  }
+
+  console.log("Before confirmation: ", card.name);
+
+  if (confirm(`Do you want to play the "${card.name}" card?`)) {
+    console.log("Inside confirmation: ", card.name);
+
+
+    if (GameInfo.selectedBuilding != undefined) {
+      let result = await requestPlayCard(card.deckId, GameInfo.selectedBuilding.boardId);
+
+      alert("You played the card!");
+
+      if (result.successful) {
+        await getGameInfo();
+        await getDecksInfo();
+        await getBoardInfo();
+
+        GameInfo.selectedCard = undefined;
+        GameInfo.selectedBuilding = undefined;
+      }
+    } else {
+      alert("No building selected.");
     }
-    
+  }
 
 }
 
-async function pickBuilding(building)
-{
-    if (confirm(`Do you want to pick the "${building.name}"`))
-    {
-        //let result = await requestBoard();   
-        
-        alert("You picked the building!");
-
-        // if (result.successful)
-        // {
-        //     await getGameInfo();
-        //     await getDecksInfo();
-        //     await getBoardInfo();
-        // }
-
-    }
-}
 
 
 async function endturnAction() {
@@ -164,3 +179,9 @@ async function closeScore() {
         await checkGame(true); // This should send the player back to matches
     } else alert("Something went wrong when ending the turn.")
 }
+
+function wait(ms) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
+  }

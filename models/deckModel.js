@@ -9,12 +9,6 @@ function fromDBCardToCard(dbCard) {
 }
 
 
-/*
-class Board {
-    constructor(BBId, position, buildingId, health, )
-}
-*/
-
 class Card {
     constructor (cardId, deckId, APcost, RPcost, name, effect, active) {
         this.cardId = cardId;
@@ -82,10 +76,6 @@ class MatchDecks {
             where ugc_user_game_id = ? or ugc_user_game_id = ?`, 
                 [game.player.id, game.opponents[0].id]);
 
-                //Testing something else
-                //console.log("--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ");
-                //console.log(game.player);
-
             let playerCards = [];
             let oppCards = [];
             for(let dbcard of dbcards) {
@@ -126,11 +116,13 @@ class MatchDecks {
             //{
                 if (pModifiers.ap < card.APcost)
                 {
+                    alert("Not enough AP");
                     return {status: 400, result:{ msg:"Not enough Action Points" }}
                 }
 
                 if (pModifiers.rp < card.RPcost)
                 {
+                    alert("Not Enough RP");
                     return {status: 400, result:{ msg:"Not enough Resource Points" }}
                 }
             //}
@@ -175,23 +167,35 @@ class MatchDecks {
                 
                 switch (card.cardId)
                 {
+                    //Attack
                     case 1: Attack1(oppBoard, game); break;
                     case 2: Attack2(oppBoard, game); break;
                     case 3: Attack3(oppBoard, game); break;
+                    case 4: Attack4(oppBoard, game); break;
+                    case 5: Attack5(oppBoard, game); break;
+                    
+                    //Defend
+                    case 6: Heal1(playerBoard); break;
+                    case 7: Heal2(playerBoard); break;
+                    case 8: Heal3(playerBoard); break;
+                    case 9: Heal4(playerBoard); break;
                 }
 
                 let boardSQL = `update board_building inner join building on build_id = bb_build_id set bb_build_hp = ?
-                                 where bb_pos = ? and bb_user_game_id = ?`
+                                 where bb_pos = ? and bb_id = ?`
 
                 for (let i = 0; i < playerBoard.length; i++) {
-                await pool.query(boardSQL, [playerBoard[i].bb_build_hp, playerBoard[i].bb_pos, playerBoard[i].bb_id]);
+                await pool.query(boardSQL, [playerBoard[i].health, playerBoard[i].position, playerBoard[i].boardId]);
                 }
 
                 for (let i = 0; i < oppBoard.length; i++) {
-                    await pool.query(boardSQL, [oppBoard[i].bb_build_hp, oppBoard[i].bb_pos, oppBoard[i].bb_id]);
+                    console.log(oppBoard[i]);
+                    await pool.query(boardSQL, [oppBoard[i].health, oppBoard[i].position, oppBoard[i].boardId]);
+                    console.log(oppBoard[i]);
                 }
                 
-
+                //Delete any building that was just destroyed.
+                await pool.query(`delete from board_building where bb_build_hp <= 0 and bb_user_game_id = ? and bb_pos != 0;`, [game.opponents[0].id]);
 
                 //if(playerBoard.RP < card.RPcost)
                 
@@ -202,36 +206,102 @@ class MatchDecks {
         }
     }
 
+
 }
 
 function Attack1(oppBoard, game) {
     for (let i = 0; i < oppBoard.length; i++) {
-      if (oppBoard[i].bb_pos === 1) {
+        if (oppBoard[i].position >= 0 && oppBoard[i].position <= 7) {
         console.log("I am dealing this extra damage: "+game.player.stats.attack);
-        oppBoard[i].bb_build_hp -= 5 + game.player.stats.attack;
+        oppBoard[i].health -= 3 + game.player.stats.attack;
         break;
         }
     }
 }
 
-  function Attack2(oppBoard, game) {
+function Attack2(oppBoard, game) {
     for (let i = 0; i < oppBoard.length; i++) {
-      if (oppBoard[i].bb_pos === 0) {
+      if (oppBoard[i].position >= 0 && oppBoard[i].position <= 7) {
         console.log("I am dealing this extra damage: "+game.player.stats.attack);
-        oppBoard[i].bb_build_hp -= 15 + game.player.stats.attack;
+        oppBoard[i].health -= 5 + game.player.stats.attack;
         break;
         }
     }
 }
 
-  function Attack3(oppBoard, game) {
+function Attack3(oppBoard, game) {
     for (let i = 0; i < oppBoard.length; i++) {
-      if (oppBoard[i].bb_pos === 0) {
+      if (oppBoard[i].position >= 0 && oppBoard[i].position <= 7) {
         console.log("I am dealing this extra damage: "+game.player.stats.attack);
-        oppBoard[i].bb_build_hp -= 2 + game.player.stats.attack;
+        oppBoard[i].health -= 1 + game.player.stats.attack;
         break;
         }
     }
+}
+
+function Attack4(oppBoard, game) {
+    for (let i = 0; i < oppBoard.length; i++) {
+      if (oppBoard[i].position >= 0 && oppBoard[i].position <= 7) {
+        console.log("I am dealing this extra damage: "+game.player.stats.attack);
+        oppBoard[i].health -= 10 + game.player.stats.attack;
+        break;
+        }
+    }
+}
+
+function Attack5(oppBoard, game) {
+    for (let i = 0; i < oppBoard.length; i++) {
+        if (oppBoard[i].position >= 1 && oppBoard[i].position <= 7) {
+            console.log("I am dealing this extra damage: "+game.player.stats.attack);
+            oppBoard[i].health -= 10 + game.player.stats.attack;
+            break;
+        }
+        if (oppBoard[i].position == 0)
+        {
+            oppBoard[i].health -= 15 + game.player.stats.attack;
+            break;
+        }
+    }
+}
+
+function Heal1(playerBoard) {
+    for (let i = 0; i < playerBoard.length; i++) {
+        if (playerBoard[i].position >= 0 && playerBoard[i].position <= 7) {
+        playerBoard[i].health += 3;
+        break;
+        }
+    }
+}
+
+function Heal2(playerBoard) {
+    for (let i = 0; i < playerBoard.length; i++) {
+        if (playerBoard[i].position >= 0 && playerBoard[i].position <= 7) {
+        playerBoard[i].health += 5;
+        break;
+        }
+    }
+}
+
+function Heal3(playerBoard) {
+    for (let i = 0; i < playerBoard.length; i++) {
+        if (playerBoard[i].position >= 0 && playerBoard[i].position <= 7) {
+        playerBoard[i].health += 10;
+        break;
+        }
+    }
+}
+
+function Heal4(playerBoard) {
+    for (let i = 0; i < playerBoard.length; i++) {
+        if (playerBoard[i].position >= 1 && playerBoard[i].position <= 7) {
+        playerBoard[i].health += 3;
+        break;
+        }
+        if (playerBoard[i].position == 0)
+        playerBoard[i].health += 20
+
+    }
+
 }
 
 

@@ -2,8 +2,8 @@
 // we only have one game info so everything is static
 class GameInfo  {
     // settings variables
-    static width = 1200;
-    static height = 600;
+    static width = 1600;
+    static height = 800;
 
     static loading = true;
 
@@ -11,13 +11,18 @@ class GameInfo  {
     static game;
     static images = {};
     static sounds = {};
+
     //Data from both sides of the players
     static matchBoard;
     static matchDeck;
 
+    //Allow select card first and then target;
+    static selectedCard;
+    static selectedBuilding;
+
+
     //Not sure if i need to call this
     static matchStats;
-
 
     // rendererers
     static scoreBoard;

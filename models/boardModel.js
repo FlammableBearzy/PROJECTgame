@@ -4,11 +4,11 @@ const pool = require("../config/database");
 
 function fromDBBuildingtoBuilding(dbBuilding) {
     //After database update, need to change build_hp to bb_build_hp
-    return new Building(dbBuilding.build_id, dbBuilding.bb_id, dbBuilding.build_ap, dbBuilding.build_rp, dbBuilding.bb_build_hp, dbBuilding.build_name, dbBuilding.build_effect, dbBuilding.build_level);
+    return new Building(dbBuilding.build_id, dbBuilding.bb_id, dbBuilding.build_ap, dbBuilding.build_rp, dbBuilding.bb_build_hp, dbBuilding.build_name, dbBuilding.build_effect, dbBuilding.build_level, dbBuilding.bb_pos);
 }
 
 class Building {
-    constructor(buildingId, boardId, costAP, costRP, health, name, effect, level) {
+    constructor(buildingId, boardId, costAP, costRP, health, name, effect, level, position) {
         this.buildingId = buildingId;
         this.boardId = boardId;
         this.costAP = costAP;
@@ -17,6 +17,7 @@ class Building {
         this.name = name;
         this.effect = effect;
         this.level = level;
+        this.position = position;
     }
 }
 
@@ -53,7 +54,7 @@ class MatchBoard {
         }
     }
 
-
+    
     static async selectBuildingFromBoard(game, boardId)
     {
         try{
@@ -88,7 +89,7 @@ class MatchBoard {
             return {status: 500, result: err};
         }
     }
-
+    
 
 }
 

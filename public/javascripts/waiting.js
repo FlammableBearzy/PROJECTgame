@@ -1,8 +1,12 @@
 window.onload = async function() {
     try {
-        let result = await checkGame(true);
-        document.getElementById('player').textContent = 
-            "Hello "+window.game.player.name;
+        let result = await checkAuthenticated(true);
+        if (result.err) {  throw result.err; }
+
+        result = await checkGame(true);
+        document.getElementById('player').textContent = "Hello " + window.user.name;
+            
+
         if (result.err) throw result.err;
     } catch (err) {
         console.log(err);

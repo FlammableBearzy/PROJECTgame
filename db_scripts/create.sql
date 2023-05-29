@@ -1,4 +1,4 @@
-#DROP DATABASE mygame;
+DROP DATABASE mygame;
 
 create database mygame;
 

@@ -32,22 +32,22 @@ insert into board_positions (bp_id, bp_obstruct) values (6, 1);
 
 # Buildings
 #Main Building
-insert into building (build_ap, build_rp, build_hp, build_name, build_effect, build_level) values (0, 0, 100, "Castle", "Its the main building, gives +1 to everything", 1);
+insert into building (build_ap, build_rp, build_hp, build_name, build_effect, build_level) values (0, 0, 150, "Castle", "Its the main building, gives +1 to everything", 1);
 
 # Damage Modifier
-insert into building (build_ap, build_rp, build_hp, build_name, build_effect, build_level) values (3, 5, 15, "Blacksmith 1", "Gives +1 to damage", 1);
-insert into building (build_ap, build_rp, build_hp, build_name, build_effect, build_level) values (3, 5, 20, "Blacksmith 2", "Gives +2 to damage", 2);
-insert into building (build_ap, build_rp, build_hp, build_name, build_effect, build_level) values (3, 5, 25, "Blacksmith 3", "Gives +3 to damage", 3);
+insert into building (build_ap, build_rp, build_hp, build_name, build_effect, build_level) values (3, 5, 20, "Blacksmith 1", "Gives +1 to damage", 1);
+insert into building (build_ap, build_rp, build_hp, build_name, build_effect, build_level) values (3, 5, 30, "Blacksmith 2", "Gives +2 to damage", 2);
+insert into building (build_ap, build_rp, build_hp, build_name, build_effect, build_level) values (3, 5, 50, "Blacksmith 3", "Gives +3 to damage", 3);
 
 # Action Points Modifier
-insert into building (build_ap, build_rp, build_hp, build_name, build_effect, build_level) values (2, 6, 15, "Tavern 1", "Gives +1 to AP", 1);
-insert into building (build_ap, build_rp, build_hp, build_name, build_effect, build_level) values (2, 6, 20, "Tavern 2", "Gives +2 to AP", 2);
-insert into building (build_ap, build_rp, build_hp, build_name, build_effect, build_level) values (2, 6, 25, "Tavern 3", "Gives +3 to AP", 3);
+insert into building (build_ap, build_rp, build_hp, build_name, build_effect, build_level) values (2, 6, 30, "Tavern 1", "Gives +1 to AP", 1);
+insert into building (build_ap, build_rp, build_hp, build_name, build_effect, build_level) values (2, 6, 40, "Tavern 2", "Gives +2 to AP", 2);
+insert into building (build_ap, build_rp, build_hp, build_name, build_effect, build_level) values (2, 6, 60, "Tavern 3", "Gives +3 to AP", 3);
 
 # Resource Points Modifier
-insert into building (build_ap, build_rp, build_hp, build_name, build_effect, build_level) values (3, 3, 15, "Farm 1", "Gives +1 to RP", 1);
-insert into building (build_ap, build_rp, build_hp, build_name, build_effect, build_level) values (3, 3, 15, "Farm 2", "Gives +2 to RP", 2);
-insert into building (build_ap, build_rp, build_hp, build_name, build_effect, build_level) values (3, 3, 15, "Farm 3", "Gives +3 to RP", 3);
+insert into building (build_ap, build_rp, build_hp, build_name, build_effect, build_level) values (3, 3, 50, "Farm 1", "Gives +1 to RP", 1);
+insert into building (build_ap, build_rp, build_hp, build_name, build_effect, build_level) values (3, 3, 60, "Farm 2", "Gives +2 to RP", 2);
+insert into building (build_ap, build_rp, build_hp, build_name, build_effect, build_level) values (3, 3, 80, "Farm 3", "Gives +3 to RP", 3);
 
 # Player vs Player information
 INSERT INTO user VALUES (1,'me','$2b$10$Wemfac2wY/7RSCdKxuYUL.GV2clfhXC66OL76uCpDFUmpYZ/bGZtW','48MnTVJ6sKIvanVHbP5Vx5rysbYrVN4EbYmk4D8xESdfm1hx8jDfNFZGNw9OZs'),(2,'me2','$2b$10$6j2xIDnnxv.TLfBSstbbO.qE7wFTf5envx/uijiFjCP3slsy7EE4K','dQ7NrsbPsuF81xFGNioR1K0tiYkjtxOhemcgMhuFIS68VrFUC9gggm3JCgzkqe');
@@ -55,9 +55,19 @@ INSERT INTO game VALUES (1,1,2);
 INSERT INTO user_game VALUES (1,1,1,1,2),(2,1,2,1,1);
 
 # Cards
-insert into card (crd_AP_cost, crd_RP_cost, crd_name, crd_effect, crd_note) values (1, 0, "Attack 1", "Deal 5 damage", null);
-insert into card (crd_AP_cost, crd_RP_cost, crd_name, crd_effect, crd_note) values (3, 0, "Attack 2", "Deal 15 damage", null);
-insert into card (crd_AP_cost, crd_RP_cost, crd_name, crd_effect, crd_note) values (0, 0, "Attack 3", "Deal 2 damage", null);
+insert into card (crd_AP_cost, crd_RP_cost, crd_name, crd_effect, crd_note) values (1, 0, "Attack 1", "Deal 3 damage", null);
+insert into card (crd_AP_cost, crd_RP_cost, crd_name, crd_effect, crd_note) values (3, 0, "Attack 2", "Deal 5 damage", null);
+insert into card (crd_AP_cost, crd_RP_cost, crd_name, crd_effect, crd_note) values (0, 0, "Attack 3", "Deal 1 damage", null);
+insert into card (crd_AP_cost, crd_RP_cost, crd_name, crd_effect, crd_note) values (2, 1, "Attack 4", "Deal 5 damage", null);
+insert into card (crd_AP_cost, crd_RP_cost, crd_name, crd_effect, crd_note) values (3, 2, "Attack 5", "Deal 10 damage", "If aimed at the castle, deal 5 extra damage");
+
+insert into card (crd_AP_cost, crd_RP_cost, crd_name, crd_effect, crd_note) values (0, 0, "Heal 1", "Heal 3 damage", null);
+insert into card (crd_AP_cost, crd_RP_cost, crd_name, crd_effect, crd_note) values (0, 1, "Heal 2", "Heal 5 damage", null);
+insert into card (crd_AP_cost, crd_RP_cost, crd_name, crd_effect, crd_note) values (1, 2, "Heal 3", "Heal 10 damage", null);
+insert into card (crd_AP_cost, crd_RP_cost, crd_name, crd_effect, crd_note) values (2, 2, "Heal 4", "Heal 10 damage", "If aimed at the castle, Heal 10 extra health");
+
+
+
 
 #Stats from the board
 insert into board_stats (bs_attack, bs_regenAP, bs_ap, bs_regenRP, bs_rp, bs_user_game_id) values (1, 1, 3, 1, 1, 1);

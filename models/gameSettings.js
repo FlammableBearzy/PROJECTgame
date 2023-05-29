@@ -5,7 +5,7 @@ module.exports.rpPerTurn = 1;
 
 
 //Cards information
-module.exports.nCards = 3;
+module.exports.nCards = 5;
 
 //Castle Settings
 module.exports.maxCastleHp = 100;
